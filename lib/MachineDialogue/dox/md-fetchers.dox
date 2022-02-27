@@ -1,0 +1,54 @@
+#!/bin/bash
+
+cat<<EOF
+# MachineDialogue - (FETCHERS)
+
+fetch_menu_controllers_with_extended_banner
+fetch_controller_option_id
+fetch_jump_keys
+fetch_action_keys
+fetch_all_menu_controller_options
+fetch_action_key_count
+fetch_action_key_regex_pattern
+fetch_menu_controllers
+fetch_set_log_levels
+fetch_ultimatum_from_user                           <Y/N-prompt>
+fetch_data_from_user                                <prompt>
+fetch_selection_from_user                           <prompt> <option1> <option2> ...
+fetch_file_size_in_bytes                            <file-path>
+fetch_all_bios_data
+fetch_all_system_data
+fetch_all_baseboard_data
+fetch_all_chassis_data
+fetch_all_processor_data
+fetch_all_memory_data
+fetch_block_devices
+fetch_file_size_in_bytes                            <file-path>
+fetch_device_size                                   <dev-path>
+fetch_wireless_password_from_user                   <prompt-string optional-True default-(Password)>
+fetch_available_wireless_access_point_essid_set
+fetch_wireless_essid_from_user
+fetch_file_length                                   <file-path>
+fetch_single_port_number_from_user                  <prompt-string optional-True default-(TargetPort)>
+fetch_ipv4_address_from_user                        <prompt-string optional-True default-(IPv4Address)>
+fetch_router_bssid_from_user                        <prompt-string optional-True default-(BSSID)>
+fetch_wireless_gateway_channel_from_user            <prompt-string optional-True default-(Channel)>
+fetch_mac_address_from_user                         <prompt-string optional-True default-(MACAddress)>
+fetch_wireless_gateway_channel_by_interface         <wireless-interface>
+fetch_wireless_gateway_bssid
+fetch_wireless_interface
+fetch_wireless_interface_from_user                  <prompt-string optional-True default-(WiFiInterface)>
+fetch_external_ipv4_address
+fetch_local_ipv4_address
+fetch_all_directory_content                         <dir-path>
+fetch_checksum_algorithm_labels
+fetch_all_available_block_devices
+fetch_all_directory_files                           <dir-path>
+fetch_file_name_from_path                           <file-path>
+fetch_directory_from_file_path                      <file-path>
+fetch_alive_lan_machines_ipv4_addresses
+fetch_alive_lan_machines_mac_addresses
+fetch_all_wireless_interfaces
+fetch_currently_connected_gateway_essid
+
+EOF

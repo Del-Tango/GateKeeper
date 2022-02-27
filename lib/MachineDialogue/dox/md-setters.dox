@@ -1,0 +1,30 @@
+#!/bin/bash
+
+cat<<EOF
+# MachineDialogue - (SETTERS)
+
+set_menu_controller_extended_banner     <menu-controller> <function-name>
+set_requiered_privileges                <root-flag value-(on | off)>
+set_project_name                        <project-name>
+set_project_prompt                      <project-prompt>
+set_menu_controller_options             <menu-controller> <controller-options-CSV>
+set_menu_controller_description         <menu-controller> <controller-description>
+set_menu_controller                     <menu-controller> <controller-description>
+set_file_editor                         <editor-name>
+set_logging                             <logging-flag value-(on | off)>
+set_safety                              <safety-flag value-(on | off)>
+set_temporary_file                      <file-path>
+set_owner                               <file-path> <user-name>
+set_permission                          <file-path> <permissions>
+set_imported_file                       <import-label> <file-path>
+set_log_file                            <file-path>
+set_log_lines                           <line-number>
+set_silent_flag                         <flag value-(on | off)>
+set_checksum_algorithm                  <checksum-algorithm>
+set_connected_essid                     <essid>
+set_wpa_supplicant_configuration_file   <file-path>
+set_wpa_supplicant_log_file             <file-path>
+set_dhcpcd_log_file                     <file-path>
+set_wireless_interface                  <wireless-interface>
+
+EOF

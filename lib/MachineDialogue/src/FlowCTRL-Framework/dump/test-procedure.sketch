@@ -1,0 +1,26 @@
+{
+    "Stage 1": [
+        {
+            "name": "Test Action 1",
+            "time": "5m",
+            "cmd": "ls -la && echo 'Hey, this worked!' || echo 'What? Why?!!'",
+            "setup-cmd": "echo 'Preparing to execute payload...'",
+            "teardown-cmd": "echo 'Payload executed!'",
+            "on-ok-cmd": "echo 'Well, this went well.'",
+            "on-nok-cmd": "echo 'This did not go well man! Fix it!'",
+            "fatal-nok": false,
+            "timeout": "10m"
+        },
+        {
+            "name": "Test Action 2",
+            "time": "3m",
+            "cmd": "ls -la && echo 'Hey, this worked!' || echo 'What? Why?!!'",
+            "setup-cmd": "echo 'Preparing to execute payload...'",
+            "teardown-cmd": "echo 'Payload executed!'",
+            "on-ok-cmd": "echo 'Well, this went well.'",
+            "on-nok-cmd": "echo 'This did not go well man! Fix it!'",
+            "fatal-nok": false,
+            "timeout": "5m"
+        }
+    ]
+}

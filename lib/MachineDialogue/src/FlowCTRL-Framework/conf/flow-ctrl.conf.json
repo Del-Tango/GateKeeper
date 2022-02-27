@@ -1,0 +1,19 @@
+{
+    "script-name": "FlowCTRL",
+    "version": "ForwardVision",
+    "version-no": 1.0,
+    "project-dir": "/home/user/FlowControl-Framework",
+    "conf-dir": "conf",
+    "data-dir": "data",
+    "log-dir": "log",
+    "state-file": ".fc-state.tmp",
+    "report-file": ".fc-report.tmp",
+    "log-file": "flow-ctrl.log",
+    "log-name": "FlowCTRL",
+    "log-format": "[ %(asctime)s ] %(name)s [ %(levelname)s ] - %(thread)d - %(filename)s - %(lineno)d: %(funcName)s - %(message)s",
+    "timestamp-format": "%Y-%m-%d %H:%M:%S",
+    "silence": false,
+    "debug": true,
+    "background": false,
+    "report": true
+}

@@ -1,0 +1,19 @@
+#!/bin/bash
+
+cat<<EOF
+# MachineDialogue - (SETUP)
+
+load_apt_dependencies                   <package1> <package2> ...
+setup_menu_controller_action_option     <label> <menu-option> <function-name>
+setup_menu_controller_menu_option       <label> <menu-option> <target-label>
+load_safety                             <flag value-(on | off)>
+load_prompt_string                      <prompt-string>
+load_logging_levels                     <level1> <level2> ...
+load_default_setting                    <setting-label> <setting-value>
+load_script_name                        <script-name>
+load_import                             <import-label> <file-path>
+load_cargo                              <cargo-label> <file-path>
+load_pip_dependencies                   <item1> <item2> ...
+load_pip3_dependencies                  <item1> <item2> ...
+
+EOF

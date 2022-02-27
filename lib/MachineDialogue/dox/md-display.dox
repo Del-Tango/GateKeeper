@@ -1,0 +1,23 @@
+#!/bin/bash
+
+cat<<EOF
+# MachineDialogue - (DISPLAY)
+
+display_loading_message                     <wait-time unit-(seconds)> <static-loading-message>
+display_script_banner                       <clear-flag optional-(True) values-(clear-screen-on | clear-screen-off) default-(clear-screen-on)>
+display_settings
+debug_msg                                   <message>
+done_msg                                    <message>
+ok_msg                                      <message>
+nok_msg                                     <message>
+qa_msg                                      <message>
+info_msg                                    <message>
+error_msg                                   <message>
+warning_msg                                 <message>
+symbol_msg                                  <message>
+display_block_devices
+display_file_content                        <file-path>
+display_available_wireless_access_points
+
+EOF
+

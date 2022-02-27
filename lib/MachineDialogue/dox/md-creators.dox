@@ -1,0 +1,18 @@
+#!/bin/bash
+
+cat<<EOF
+# MachineDialogue - (CREATORS)
+
+create_menu_controller              <label> <description> <options>
+create_system_group                 <group-name>
+create_system_user                  <user-name>
+create_directory                    <dir-path>
+create_symbolic_link                <src-dir-path> <dst-dir-path>
+create_partition_on_block_device    <block-dev-path>
+create_file                         <file-path>
+create_directory                    <dir-path>
+create_data_checksum                <data>
+create_file_checksum                <file-path>
+create_directory_checksum           <dir-path>
+
+EOF

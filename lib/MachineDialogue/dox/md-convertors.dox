@@ -1,0 +1,8 @@
+#!/bin/bash
+
+cat<<EOF
+# MachineDialogue - (CONVERTORS)
+
+convert_array_to_delimited_string   <delimiter> <array-item1> <array-item2> ...
+
+EOF

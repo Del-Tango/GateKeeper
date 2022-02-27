@@ -1,0 +1,13 @@
+#!/bin/bash
+
+cat<<EOF
+# MachineDialogue - (INSTALLERS)
+
+pip_install_dependency          <lib-name>
+pip_install_dependencies
+apt_install_dependency          <util-name>
+apt_install_dependencies
+pip3_install_dependency         <lib-name>
+pip3_install_dependencies
+
+EOF

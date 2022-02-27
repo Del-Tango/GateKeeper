@@ -1,0 +1,50 @@
+{
+    "Stage 1": [
+        {
+            "name": "Test procedure 1",
+            "time": "5m",
+            "cmd": "ls -la && echo 'Hey, this worked!' || echo 'What? Why?!!'; sleep 10",
+            "setup-cmd": "echo 'Preparing to execute payload...'",
+            "teardown-cmd": "echo 'Payload executed!'",
+            "on-ok-cmd": "echo 'Well, this went well.'",
+            "on-nok-cmd": "echo 'This did not go well man! Fix this shit'",
+            "fatal-nok": false,
+            "timeout": "10m"
+        },
+        {
+            "name": "Test procedure 2",
+            "time": "1m",
+            "cmd": "ls -la && echo 'Hey, this worked!' || echo 'What? Why?!!'",
+            "setup-cmd": "echo 'Preparing to execute payload...'",
+            "teardown-cmd": "echo 'Payload executed!'",
+            "on-ok-cmd": "",
+            "on-nok-cmd": "echo 'This did not go well man! Fix this shit'",
+            "fatal-nok": false,
+            "timeout": "3m"
+        }
+    ],
+    "Stage 2": [
+        {
+            "name": "Test procedure 3",
+            "time": "5m",
+            "cmd": "ls -la && echo 'Hey, this worked!' || echo 'What? Why?!!'",
+            "setup-cmd": "echo 'Preparing to execute payload...'",
+            "teardown-cmd": "echo 'Payload executed!'",
+            "on-ok-cmd": "echo 'Well, this went well.'",
+            "on-nok-cmd": "",
+            "fatal-nok": false,
+            "timeout": "10m"
+        },
+        {
+            "name": "Test procedure 4",
+            "time": "1m",
+            "cmd": "ls -la && echo 'Hey, this worked!' || echo 'What? Why?!!'",
+            "setup-cmd": "",
+            "teardown-cmd": "echo 'Payload executed!'",
+            "on-ok-cmd": "echo 'Well, this went well.'",
+            "on-nok-cmd": "echo 'This did not go well man! Fix this shit'",
+            "fatal-nok": false,
+            "timeout": "3m"
+        }
+    ]
+}

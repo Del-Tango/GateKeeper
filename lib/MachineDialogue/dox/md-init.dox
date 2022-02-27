@@ -1,0 +1,11 @@
+#!/bin/bash
+
+cat<<EOF
+# MachineDialogue - (INIT)
+
+# [ NOTE ]: When a controller returns a value other than 0 to its init
+#           function, it can only mean a return to the previous menu.
+
+init_menu       <menu-controller>
+
+EOF

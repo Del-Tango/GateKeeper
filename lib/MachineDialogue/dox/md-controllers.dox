@@ -1,0 +1,8 @@
+#!/bin/bash
+
+cat<<EOF
+# MachineDialogue - (CONTROLLERS)
+
+menu_controller     <menu-controller> <controller-option1> <controller-option2> ...
+
+EOF

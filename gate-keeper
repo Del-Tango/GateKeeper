@@ -1,0 +1,56 @@
+#!/bin/bash
+#
+# Regards, the Alveare Solutions #!/Society -x
+#
+# Gate Keeper
+
+declare -A GK_DEFAULT
+declare -A GK_LIB
+declare -A GK_SOURCE
+declare -A GK_CARGO
+
+# [ NOTE ]: Absolute directory path the current file is in.
+GK_DIRECTORY="$(
+    cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd
+)"
+CONF_FILE_PATH="$GK_DIRECTORY/conf/gate-keeper.conf"
+
+if [ ! -f "$CONF_FILE_PATH" ]; then
+    echo "[ WARNING ]: Config file ($CONF_FILE_PATH) not found."
+    exit 1
+else
+    source "$CONF_FILE_PATH"
+fi
+
+for script in ${!GK_SOURCE[@]}; do
+    source ${GK_SOURCE[$script]}
+    if [ $? -ne 0 ] && [ ${#@} -eq 0 ]; then
+        echo "[ NOK ]: Something went wrong."\
+            "Could not load ($script) script."
+    elif [ ${#@} -eq 0 ]; then
+        echo "[ OK ]: Successfully loaded ($script) script."
+    fi
+done
+
+for library in ${!GK_LIB[@]}; do
+    source ${GK_LIB[$library]}
+    if [ $? -ne 0 ] && [ ${#@} -eq 0 ]; then
+        echo "[ NOK ]: Something went wrong."\
+            "Could not load ($library) library."
+    elif [ ${#@} -eq 0 ]; then
+        echo "[ OK ]: Successfully loaded ($library) library."
+    fi
+done
+
+# MISCELLANEOUS
+
+function init_gate_keeper () {
+    project_setup; display_banners; init_menu 'MainController'
+    return $?
+}
+
+init_gate_keeper $@
+exit $?
+
+# CODE DUMP
+

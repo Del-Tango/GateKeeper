@@ -1,0 +1,34 @@
+#!/bin/bash
+
+cat<<EOF
+# MachineDialogue - (ACTIONS)
+
+action_install_dependencies
+action_help
+action_back
+action_clear_log_file
+action_log_view_tail
+action_log_view_head
+action_log_view_more
+action_edit_temporary_file
+action_edit_imported_file                           <import-label  info-(Label to fetch file path by)>
+action_import_file                                  <import-label  info-(Label to set file path under)>
+action_set_temporary_file
+action_set_safety_on
+action_set_safety_off
+action_set_log_file
+action_set_log_lines
+action_set_file_editor
+action_set_silent_flag_on
+action_set_silent_flag_off
+action_self_destruct
+action_set_hashing_algorithm
+action_create_checksum_of_string                    <string>
+action_display_available_wireless_access_points
+action_connect_to_wireless_access_point
+action_disconnect_from_wireless_access_point
+action_create_checksum_of_file                      <file-path>
+action_compare_checksum_of_string                   <checksum> <string>
+action_compare_checksum_of_file                     <file-path> <checksum>
+
+EOF

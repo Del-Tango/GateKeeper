@@ -1,0 +1,53 @@
+#!/bin/bash
+
+cat<<EOF
+# MachineDialogue - (GENERAL)
+
+remove_system_group                             <group-name>
+add_system_user_to_group                        <user-name> <group-name>
+filter_file_content                             <file-path> <start-pattern> <stop-pattern>
+remove_system_user                              <user-name>
+update_apt_dependencies                         <package1> <package2> ...
+add_apt_dependency                              <dependency-package>
+remove_apt_dependency                           <dependency-package>
+bind_controller_option_to_menu                  <menu-controller> <controller-option> <controller>
+bind_controller_option_to_action                <menu-controller> <controller-option> <function>
+bind_controller_option                          <bind-target (to_menu | to_action)> <menu-controller> <controller-option> <option-resource (function | controller)>
+remove_all_menu_controller_option_keys          <menu-controller>
+remove_menu_controller                          <menu-controller>
+add_menu_controller                             <menu-controller> <controller-description>
+view_block_device_sector_hexdump                <dev-path> <block-size> <start-sector> <block-count>
+truncate_file_to_size                           <file-path> <size>
+clone_directory_structure                       <src-dir-path> <dst-dir-path>
+remove_directory                                <dir-path>
+remove_file                                     <file-path>
+archive_file                                    <file-path>
+mount_block_device                              <dev-path> <mount-point-dir>
+unmount_block_device                            <dev-path>
+write_to_file                                   <file-path> <content>
+clear_file                                      <file-path>
+is_alive_ping                                   <remote-address>
+three_second_count_down
+sort_alphanumerically                           <item1> <item2> ...
+edit_file                                       <file-path>
+untrap_persistent_menu_return_signal_sigint
+trap_persistent_menu_return_signal_sigint
+trap_single_menu_return_signal_sigint           <message>
+trap_signals                                    <command-string type-bash> <sig1 sig2 ...>
+trap_interrupt_signal                           <command-string type-bash>
+self_destruct
+lan_scan
+connect_to_wireless_access_point                <connection-mode value-(password-on | password-off)> <essid> <wifi-password optional-True>
+disconnect_from_wireless_access_point
+shred_directory                                 <dir-path>
+shred_file                                      <file-path>
+update_pip3_dependencies                        <item1> <item2> ...
+update_pip_dependencies                         <item1> <item2> ...
+flowctrl_start                                  <json-sketch-file> <daemon-flag values(0|1)>
+flowctrl_pause
+flowctrl_resume
+flowctrl_stop
+flowctrl_purge
+
+
+EOF

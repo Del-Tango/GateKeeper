@@ -1,0 +1,18 @@
+#!/bin/bash
+
+cat<<EOF
+# MachineDialogue - (FORMATTERS)
+
+format_menu_controller_jumper_function_resource             <menu-controler> <controller-option>
+format_menu_controller_jump_key                             <menu-controler> <controller-option>
+format_menu_controller_action_key                           <menu-controler> <controller-option>
+format_flag_colors                                          <flag-value>
+format_lan_scan
+format_flowctrl_carg_action_start_args                      <json-sketch-file>
+format_flowctrl_carg_action_stop_args
+format_flowctrl_carg_action_pause_args
+format_flowctrl_carg_action_resume_args
+format_flowctrl_carg_action_purge_args
+
+
+EOF

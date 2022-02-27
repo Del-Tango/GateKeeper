@@ -1,0 +1,53 @@
+#!/bin/bash
+#
+# Regards, the Alveare Solutions society.
+#
+# Machine Dialogue Framework v2.0
+
+declare -A MD_DEFAULT
+declare -A MD_CONTROLLERS
+declare -A MD_CONTROLLER_BANNERS
+declare -A MD_CONTROLLER_OPTIONS
+declare -A MD_CONTROLLER_OPTION_KEYS
+declare -A MD_SOURCE
+declare -A MD_LOGS
+declare -a MD_LOGGING_LEVELS
+declare -a MD_APT_DEPENDENCIES
+declare -A MD_IMPORTS
+declare -A MD_CARGO
+declare -A MD_PAYLOAD
+declare -a MD_PIP_DEPENDENCIES
+declare -a MD_PIP3_DEPENDENCIES
+
+MD_DIRECTORY="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+if [ ! -z "$MD_DIRECTORY" ]; then
+    CONF_FILE_PATH="$MD_DIRECTORY/conf/machine-dialogue.conf"
+else
+    CONF_FILE_PATH="conf/machine-dialogue.conf"
+fi
+
+function lock_and_load () {
+    if [ -f "$CONF_FILE_PATH" ]; then
+        source "$CONF_FILE_PATH"
+    fi
+
+    echo "[ ${BLUE}MachineDialogue${RESET} ]:"\
+        "${CYAN}Powered by Alveare Solutions!${RESET}"
+
+    for source_file in ${!MD_SOURCE[@]}; do
+        if [ ! -f "${MD_SOURCE[$source_file]}" ]; then
+            echo "[ ${RED}NOK${RESET} ]: Could not import "\
+                "${MD_SOURCE[$source_file]}. File not found."
+            continue
+        fi
+        source "${MD_SOURCE[$source_file]}"
+        echo "[ ${GREEN}OK${RESET} ]: Loaded"\
+            "${GREEN}${MD_SOURCE[$source_file]}${RESET}"
+    done
+    symbol_msg "${BLUE}MachineDialogue${RESET}" \
+        "${CYAN}Locked and Loaded!${RESET}"
+    return 0
+}
+
+# lock_and_load
