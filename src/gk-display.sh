@@ -93,13 +93,19 @@ function display_banners () {
 }
 
 function display_gate_status() {
-    local CONTENT="`cat ${MD_DEFAULT['gate-index']}`"
+    local CONTENT="`cat ${MD_DEFAULT['gate-index']} | xargs`"
+    debug_msg "Gate index content: (${CONTENT})"
     if [ ! -f "${MD_DEFAULT['gate-index']}" ] || [[ -z "${CONTENT}" ]]; then
         local VALUE="${RED}Unknown${RESET}"
     else
-        local VALUE=`echo ${CONTENT} | \
-            sed -e "s/0/${RED}Closed${RESET}/g" -e "s/1/${GREEN}Open${RESET}/g"`
+        # WARNING:
+        if [[ "$CONTENT" == "0" ]]; then
+            local VALUE="${RED}Closed${RESET}"
+        elif [[ "$CONTENT" == "1" ]]; then
+            local VALUE="${GREEN}Open${RESET}"
+        fi
     fi
+    debug_msg  "Gate Status: (${VALUE})"
     echo "[ ${CYAN}Gate Status${RESET}              ]: ${VALUE}"
     return $?
 }

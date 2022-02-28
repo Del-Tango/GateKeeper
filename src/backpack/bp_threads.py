@@ -7,7 +7,7 @@
 import threading
 import logging
 
-log = logging.getLogger('FloodGateNODE')
+log = logging.getLogger('GateKeeper')
 
 
 def threadify(function_obj, *args, join=False, **kwargs):
