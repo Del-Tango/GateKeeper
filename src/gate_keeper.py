@@ -60,7 +60,7 @@ GK_DEFAULT = {
     'wifi-pass': 'gatekeeper',
     'gpio-mode': GPIO.BCM,
     'pi-warnings': False,
-    'watchdog-interval': 0.1,
+    'watchdog-interval': 0.2,
 }
 GK_CARGO = {
     'gate-keeper': __file__,
@@ -149,14 +149,14 @@ def action_start_watchdog(*args, **kwargs):
         ))
         if cmd_open == 1:
             log.info('CMD Watchdog - Opening gates!')
-            action_open_gates 'all'
+            action_open_gates('all')
         cmd_close = GPIO.input(GK_PINS['in']['gate1-close'])
         log.debug('CMD Watchdog scan - Close pin ({}) state: ({})'.format(
-            GK_PINS['in']['gate1-open'], cmd_close
+            GK_PINS['in']['gate1-close'], cmd_close
         ))
-        if cmd_open == 1:
+        if cmd_close == 1:
             log.info('CMD Watchdog - Closing gates!')
-            action_close_gates 'all'
+            action_close_gates('all')
         time.sleep(GK_DEFAULT['watchdog-interval'])
 
 def action_setup(*args, **kwargs):
@@ -454,14 +454,11 @@ def handle_actions(actions=[], *args, **kwargs):
 
 # FORMATTERS
 
-# TODO - REFACTOR - start watchdog here
 def format_cron_content():
-    log.debug('TODO - REFACTOR')
+    log.debug('')
     content = ''.join([
-        '@reboot service ssh start',
-#       '\n@reboot tmux new-session -A -s ',
-#       GK_SCRIPT_NAME, ' \; send -t ', GK_SCRIPT_NAME, ' "bash" ENTER \; send -t ',
-#       GK_SCRIPT_NAME, ' "gatekeeper" ENTER \; detach -s ', GK_SCRIPT_NAME, '\n'
+        '@reboot service ssh start', '\n',
+        '@reboot ', GK_DEFAULT['project-path'], '/gate-keeper --start-watchdog', '\n'
     ])
     log.debug('Formatted Cron file content: (\n{})'.format(content))
     return content

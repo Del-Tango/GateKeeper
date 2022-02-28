@@ -84,7 +84,7 @@ function cli_action_start_watchdog() {
         echo "[ NOK ]: Something went wrong! Could not start Command Watchdog service!"
         return 1
     fi
-    echo $WATCHDOG_PID > ${MD_DEFAULT['pid-cmd-wdg']}
+    echo "$WATCHDOG_PID" > "${MD_DEFAULT['pid-cmd-wdg']}"
     echo "[ OK ]: CMD Watchdog PID: ${WATCHDOG_PID}"
     return $?
 }
