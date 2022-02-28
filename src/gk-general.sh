@@ -40,8 +40,14 @@ function process_cli_args() {
                     local FAILURE_COUNT=$((FAILURE_COUNT + 1))
                 fi
                 ;;
-            -W|--start-watchdog)
+            -SW|--start-watchdog)
                 cli_action_start_watchdog
+                if [ $? -ne 0 ]; then
+                    local FAILURE_COUNT=$((FAILURE_COUNT + 1))
+                fi
+                ;;
+            -sW|--stop-watchdog)
+                cli_action_stop_watchdog
                 if [ $? -ne 0 ]; then
                     local FAILURE_COUNT=$((FAILURE_COUNT + 1))
                 fi

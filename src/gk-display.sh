@@ -21,7 +21,11 @@ function display_usage () {
 
     -s  | --gate-status            Check if gates are opened or closed.
 
-    -W  | --start-watchdog         Starts the watchdog daemon process that
+    -SW | --start-watchdog         Starts the watchdog daemon process that
+        |                          monitors signals comming through the GPIO
+        |                          command pins.
+
+    -sW | --stop-watchdog          Stops the watchdog daemon process that
         |                          monitors signals comming through the GPIO
         |                          command pins.
 

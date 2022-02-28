@@ -78,18 +78,25 @@ function setup_project_dependencies () {
     return $?
 }
 
-
 # MANUAL CTRL SETUP
 
 function setup_manual_ctrl_menu_controller() {
     setup_manual_ctrl_menu_option_open_flood_gates
     setup_manual_ctrl_menu_option_close_flood_gates
     setup_manual_ctrl_menu_option_gate_status_check
+    setup_manual_ctrl_menu_option_command_watchdog
     setup_manual_ctrl_menu_option_help
     setup_manual_ctrl_menu_option_back
     done_msg "(${CYAN}$MANUALCTL_CONTROLLER_LABEL${RESET}) controller"\
         "option binding complete."
     return 0
+}
+
+function setup_manual_ctrl_menu_option_command_watchdog() {
+    setup_menu_controller_action_option \
+        "$MANUALCTL_CONTROLLER_LABEL" 'CMD-Watchdog' \
+        'action_command_watchdog'
+    return $?
 }
 
 function setup_manual_ctrl_menu_option_open_flood_gates() {

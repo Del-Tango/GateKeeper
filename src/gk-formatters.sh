@@ -4,6 +4,16 @@
 #
 # FORMATTERS
 
+function format_cargo_exec_string() {
+    local ARGUMENTS=( ${@} )
+    if [ ${#ARGUMENTS[@]} -eq 0 ]; then
+        return 1
+    fi
+    local EXEC_STR="~$ ./`basename ${GK_CARGO['gate-keeper']}` ${ARGUMENTS[@]}"
+    echo "${EXEC_STR}"
+    return $?
+}
+
 function format_start_watchdog_cargo_arguments() {
     local ARGUMENTS=(
         `format_floodgate_cargo_constant_args`
@@ -66,11 +76,6 @@ function format_check_gates_cargo_arguments() {
         `format_floodgate_cargo_constant_args`
         "--action check-gates"
     )
-    if [ -z "$GATES_CSV" ]; then
-        local ARGUMENTS=( ${ARGUMENTS[@]} "--gate ${MD_DEFAULT['gates-csv']}" )
-    else
-        local ARGUMENTS=( ${ARGUMENTS[@]} "--gate $GATES_CSV" )
-    fi
     echo -n "${ARGUMENTS[@]}"
     return $?
 }

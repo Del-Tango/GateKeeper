@@ -4,50 +4,109 @@
 #
 # ACTIONS
 
-# TODO
+function action_start_command_watchdog() {
+    cli_start_command_watchdog
+    return 0
+}
+
+function action_stop_command_watchdog() {
+    cli_stop_command_watchdog
+    return 0
+}
+
+function action_command_watchdog() {
+    local OPTIONS=( 'Start-CMD-Watchdog' 'Stop-CMD-Watchdog' )
+    echo; while :; do
+        info_msg "Select CMD Watchdog action or ${MAGENTA}Back${RESET}.
+        "
+        ACTION=`fetch_selection_from_user 'Watchdog' ${OPTIONS[@]}`
+        if [ $? -ne 0 ]; then
+            echo; info_msg "Aborting action."
+            return 1
+        fi
+        break
+    done
+    case "$ACTION" in
+        'Start-CMD-Watchdog')
+            action_start_command_watchdog
+        ;;
+        'Stop-CMD-Watchdog')
+            action_stop_command_watchdog
+        ;;
+        *)
+            warning_msg "Invalid option! (${RED}$ACTION${RESET})"
+            return 1
+        ;;
+    esac
+    return $?
+}
+
+function cli_action_stop_watchdog() {
+    echo "[ INFO ]: Stopping Gate CMD Watchdog..."
+    touch ${MD_DEFAULT['pid-cmd-wdg']}
+    local WATCHDOG_PID=`cat ${MD_DEFAULT['pid-cmd-wdg']}`
+    if [ $? -ne 0 ] || [ -z "$WATCHDOG_PID" ]; then
+        echo "[ NOK ]: No currently running CMD Watchdog process!"
+        return 1
+    fi
+    ps -aux | grep ${WATCHDOG_PID} | grep -v 'grep' &> /dev/null
+    if [ $? -ne 0 ]; then
+        echo > ${MD_DEFAULT['pid-cmd-wdg']}
+        echo "[ NOK ]: Process ${RED}${WATCHDOG_PID}${RESET} not found! Cleaning up..."
+        return 2
+    fi
+    kill -9 $WATCHDOG_PID &> /dev/null
+    local EXIT_CODE=$?
+    if [ $EXIT_CODE -ne 0 ]; then
+        echo "[ NOK ]: Could not terminate PID! ${RED}${WATCHDOG_PID}${RESET}"
+    else
+        echo > ${MD_DEFAULT['pid-cmd-wdg']}
+        echo "[ OK ]: Terminated PID: ${RED}${WATCHDOG_PID}${RESET}"
+    fi
+    return $EXIT_CODE
+}
+
 function cli_action_start_watchdog() {
     local ARGUMENTS=( `format_start_watchdog_cargo_arguments` )
-    local EXEC_STR="~$ ./`basename ${GK_CARGO['gate-keeper']}` ${ARGUMENTS[@]}"
     echo "
-[ INFO ]: About to execute (${MAGENTA}${EXEC_STR}${RESET})"
+[ INFO ]: About to execute (${MAGENTA}`format_cargo_exec_string ${ARGUMENTS[@]}`${RESET})"
     action_floodgate_cargo ${ARGUMENTS[@]} &> /dev/null &
-
-    # TODO - Fetch pid - save to file
-
+    local WATCHDOG_PID=$!
+    if [ -z "$WATCHDOG_PID" ]; then
+        echo "[ NOK ]: Something went wrong! Could not start Command Watchdog service!"
+        return 1
+    fi
+    echo $WATCHDOG_PID > ${MD_DEFAULT['pid-cmd-wdg']}
     return $?
 }
 
 function cli_action_gate_status_check() {
     local ARGUMENTS=( `format_check_gates_cargo_arguments` )
-    local EXEC_STR="~$ ./`basename ${GK_CARGO['gate-keeper']}` ${ARGUMENTS[@]}"
     echo "
-[ INFO ]: About to execute (${MAGENTA}${EXEC_STR}${RESET})"
+[ INFO ]: About to execute (${MAGENTA}`format_cargo_exec_string ${ARGUMENTS[@]}`${RESET})"
     action_floodgate_cargo ${ARGUMENTS[@]}
     return $?
 }
 
 function cli_action_open_gates() {
     local ARGUMENTS=( `format_open_gates_cargo_arguments` )
-    local EXEC_STR="~$ ./`basename ${GK_CARGO['gate-keeper']}` ${ARGUMENTS[@]}"
     echo "
-[ INFO ]: About to execute (${MAGENTA}${EXEC_STR}${RESET})"
+[ INFO ]: About to execute (${MAGENTA}`format_cargo_exec_string ${ARGUMENTS[@]}`${RESET})"
     action_floodgate_cargo ${ARGUMENTS[@]}
     return $?
 }
 
 function cli_action_close_gates() {
     local ARGUMENTS=( `format_close_gates_cargo_arguments` )
-    local EXEC_STR="~$ ./`basename ${GK_CARGO['gate-keeper']}` ${ARGUMENTS[@]}"
     echo "
-[ INFO ]: About to execute (${MAGENTA}${EXEC_STR}${RESET})"
+[ INFO ]: About to execute (${MAGENTA}`format_cargo_exec_string ${ARGUMENTS[@]}`${RESET})"
     action_floodgate_cargo ${ARGUMENTS[@]}
     return $?
 }
 
 function action_gate_status_check() {
     local ARGUMENTS=( `format_check_gates_cargo_arguments` )
-    local EXEC_STR="~$ ./`basename ${GK_CARGO['gate-keeper']}` ${ARGUMENTS[@]}"
-    echo; info_msg "About to execute (${MAGENTA}${EXEC_STR}${RESET})"
+    echo; info_msg "About to execute (${MAGENTA}`format_cargo_exec_string ${ARGUMENTS[@]}`${RESET})"
     action_floodgate_cargo ${ARGUMENTS[@]}
     return $?
 }
