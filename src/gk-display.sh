@@ -15,14 +15,20 @@ function display_usage () {
 
     -S  | --setup                  Setup machine.
 
-    -O  | --gates-open             Open gates specified in config file.
+    -O  | --open-gates             Open gates specified in config file.
 
-    -C  | --gates-closed           Close gates specified in config file.
+    -C  | --close-gates            Close gates specified in config file.
+
+    -s  | --gate-status            Check if gates are opened or closed.
+
+    -W  | --start-watchdog         Starts the watchdog daemon process that
+        |                          monitors signals comming through the GPIO
+        |                          command pins.
 
 
     [ EXAMPLE     ]:
 
-        $~ $FILE_NAME --setup --open-gates
+        $~ $FILE_NAME --setup --open-gates --gate-status
 
         $~ $FILE_NAME --close-gates
 
@@ -34,13 +40,12 @@ function display_header () {
     cat <<EOF
     ___________________________________________________________________________
 
-     *            *           *   ${BLUE}${GK_SCRIPT_NAME}${RESET}   *           *           *
+     *             *             *   ${BLUE}${GK_SCRIPT_NAME}${RESET}   *             *            *
     ___________________________________________________________________________
-                      Regards, the Alveare Solutions #!/Society -x
+                    Regards, the Alveare Solutions #!/Society -x
 EOF
     return $?
 }
-
 
 function display_server_ctrl_settings () {
     local ARGUMENTS=( `format_display_server_ctrl_settings_args` )
@@ -84,6 +89,18 @@ function display_banners () {
             ${MD_CARGO[${MD_DEFAULT['banner']}]} "${MD_DEFAULT['conf-file']}"
             ;;
     esac
+    return $?
+}
+
+function display_gate_status() {
+    local CONTENT="`cat ${MD_DEFAULT['gate-index']}`"
+    if [ ! -f "${MD_DEFAULT['gate-index']}" ] || [[ -z "${CONTENT}" ]]; then
+        local VALUE="${RED}Unknown${RESET}"
+    else
+        local VALUE=`echo ${CONTENT} | \
+            sed -e "s/0/${RED}Closed${RESET}/g" -e "s/1/${GREEN}Open${RESET}/g"`
+    fi
+    echo "[ ${CYAN}Gate Status${RESET}              ]: ${VALUE}"
     return $?
 }
 
@@ -193,7 +210,7 @@ function display_setting_silence_flag () {
 }
 
 function display_setting_machine_id () {
-    echo "[ ${CYAN}HEAD Machine ID${RESET}          ]: ${BLUE}${MD_DEFAULT['machine-id']}${RESET}"
+    echo "[ ${CYAN}Machine ID${RESET}               ]: ${BLUE}${MD_DEFAULT['machine-id']}${RESET}"
     return $?
 }
 
@@ -358,6 +375,9 @@ function display_fg_settings () {
                 ;;
             'data-dir')
                 display_data_dir; continue
+                ;;
+            'gate-status')
+                display_gate_status; continue
                 ;;
         esac
     done

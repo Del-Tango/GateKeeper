@@ -8,7 +8,7 @@ import os
 import stat
 import logging
 
-log = logging.getLogger('FloodGateHEAD')
+log = logging.getLogger('GateKeeper')
 
 
 def check_superuser():

@@ -7,7 +7,7 @@
 import time
 import logging
 
-log = logging.getLogger('FloodGateHEAD')
+log = logging.getLogger('GateKeeper')
 
 
 def fetch_time():

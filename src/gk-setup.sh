@@ -58,7 +58,6 @@ function project_setup () {
     load_project_config
     create_project_menu_controllers
     setup_project_menu_controllers
-    cleanup_pid_files
 }
 
 function setup_project_menu_controllers () {
@@ -85,7 +84,7 @@ function setup_project_dependencies () {
 function setup_manual_ctrl_menu_controller() {
     setup_manual_ctrl_menu_option_open_flood_gates
     setup_manual_ctrl_menu_option_close_flood_gates
-    setup_manual_ctrl_menu_option_setup
+    setup_manual_ctrl_menu_option_gate_status_check
     setup_manual_ctrl_menu_option_help
     setup_manual_ctrl_menu_option_back
     done_msg "(${CYAN}$MANUALCTL_CONTROLLER_LABEL${RESET}) controller"\
@@ -95,28 +94,28 @@ function setup_manual_ctrl_menu_controller() {
 
 function setup_manual_ctrl_menu_option_open_flood_gates() {
     setup_menu_controller_action_option \
-        "$MANUALCTL_CONTROLLER_LABEL" 'Open-Flood-Gates' \
-        'action_open_flood_gates'
+        "$MANUALCTL_CONTROLLER_LABEL" 'Open-Gates' \
+        'action_open_gates'
     return $?
 }
 
 function setup_manual_ctrl_menu_option_close_flood_gates() {
     setup_menu_controller_action_option \
-        "$MANUALCTL_CONTROLLER_LABEL" 'Close-Flood-Gates' \
-        'action_close_flood_gates'
+        "$MANUALCTL_CONTROLLER_LABEL" 'Close-Gates' \
+        'action_close_gates'
     return $?
 }
 
-function setup_manual_ctrl_menu_option_setup() {
+function setup_manual_ctrl_menu_option_gate_status_check() {
     setup_menu_controller_action_option \
-        "$MANUALCTL_CONTROLLER_LABEL" 'Setup' \
-        'action_setup_machine'
+        "$MANUALCTL_CONTROLLER_LABEL" 'Gate-Status-Check' \
+        'action_gate_status_check'
     return $?
 }
 
 function setup_manual_ctrl_menu_option_help() {
     setup_menu_controller_action_option \
-        "$MANUALCTL_CONTROLLER_LABEL" 'Help' \
+        "$MANUALCTL_CONTROLLER_LABEL" 'Help-Me-Understand' \
         'action_help'
     return $?
 }
@@ -190,7 +189,7 @@ function setup_settings_menu_option_set_silent_flag() {
 function setup_settings_menu_option_set_gate_csv() {
     setup_menu_controller_action_option \
         "$SETTINGS_CONTROLLER_LABEL" 'Set-Gate-CSV' \
-        'action_set_flood_gate_csv'
+        'action_set_gate_csv'
     return $?
 }
 
@@ -357,7 +356,6 @@ function setup_settings_menu_controller () {
 # MAIN MENU SETUP
 
 function setup_main_menu_controller() {
-    setup_main_menu_option_server_ctrl
     setup_main_menu_option_manual_ctrl
     setup_main_menu_option_log_viewer
     setup_main_menu_option_control_panel

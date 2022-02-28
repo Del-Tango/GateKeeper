@@ -8,7 +8,7 @@ import logging
 
 from subprocess import Popen, PIPE
 
-log = logging.getLogger('FloodGateNODE')
+log = logging.getLogger('GateKeeper')
 
 
 def shell_cmd(command, user=None):

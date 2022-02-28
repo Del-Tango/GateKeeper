@@ -8,7 +8,7 @@ import string
 import random
 import logging
 
-log = logging.getLogger('FloodGateHEAD')
+log = logging.getLogger('GateKeeper')
 
 
 def generate_msg_id(id_length, id_characters=list(string.ascii_letters + string.digits)):

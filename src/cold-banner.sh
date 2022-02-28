@@ -1,12 +1,12 @@
 #!/bin/bash
 #
-# Regards, the Alveare Solutions society.
+# Regards, the Alveare Solutions #!/Society -x
 #
 # COLD BANNER
 
 CONF_FILE_PATH="$1"
-SCRIPT_NAME="FloodGate"
-TMP_FILE="/tmp/.fg-head-${RANDOM}.tmp"
+SCRIPT_NAME="GateKeeper"
+TMP_FILE="/tmp/.gate-keeper-${RANDOM}.tmp"
 BLACK=`tput setaf 0`
 RED=`tput setaf 1`
 GREEN=`tput setaf 2`

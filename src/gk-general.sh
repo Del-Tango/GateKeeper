@@ -34,6 +34,18 @@ function process_cli_args() {
                     local FAILURE_COUNT=$((FAILURE_COUNT + 1))
                 fi
                 ;;
+            -s|--gate-status)
+                cli_action_gate_status_check 'all'
+                if [ $? -ne 0 ]; then
+                    local FAILURE_COUNT=$((FAILURE_COUNT + 1))
+                fi
+                ;;
+            -W|--start-watchdog)
+                cli_action_start_watchdog
+                if [ $? -ne 0 ]; then
+                    local FAILURE_COUNT=$((FAILURE_COUNT + 1))
+                fi
+                ;;
             *)
                 echo "[ WARNING ]: Invalid CLI arg! (${opt})"
                 ;;

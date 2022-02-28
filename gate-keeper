@@ -8,6 +8,7 @@ declare -A GK_DEFAULT
 declare -A GK_LIB
 declare -A GK_SOURCE
 declare -A GK_CARGO
+declare -A GK_PROCEDURES
 
 # [ NOTE ]: Absolute directory path the current file is in.
 GK_DIRECTORY="$(
@@ -45,6 +46,18 @@ done
 # MISCELLANEOUS
 
 function init_gate_keeper () {
+    if [ ${#@} -gt 0 ]; then
+        declare -A MD_DEFAULT
+        declare -A MD_CARGO
+        for setting_key in ${!GK_DEFAULT[@]}; do
+            MD_DEFAULT["${setting_key}"]="${GK_DEFAULT[${setting_key}]}"
+        done
+        for setting_key in ${!GK_CARGO[@]}; do
+            MD_CARGO["${setting_key}"]="${GK_CARGO[${setting_key}]}"
+        done
+        cli_update_config_json_file; process_cli_args $@
+        return $?
+    fi
     project_setup; display_banners; init_menu 'MainController'
     return $?
 }

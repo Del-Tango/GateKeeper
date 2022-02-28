@@ -4,7 +4,37 @@
 #
 # FORMATTERS
 
+function format_start_watchdog_cargo_arguments() {
+    local ARGUMENTS=(
+        `format_floodgate_cargo_constant_args`
+        "--action start-watchdog"
+    )
+    echo -n "${ARGUMENTS[@]}"
+    return $?
+}
+
+function format_open_gates_cargo_arguments() {
+    local GATES_CSV="$1"
+    local ARGUMENTS=(
+        `format_floodgate_cargo_constant_args "${GATES_CSV}"`
+        "--action open-gates"
+    )
+    echo -n "${ARGUMENTS[@]}"
+    return $?
+}
+
+function format_close_gates_cargo_arguments() {
+    local GATES_CSV="$1"
+    local ARGUMENTS=(
+        `format_floodgate_cargo_constant_args "${GATES_CSV}"`
+        "--action close-gates"
+    )
+    echo -n "${ARGUMENTS[@]}"
+    return $?
+}
+
 function format_floodgate_cargo_constant_args() {
+    local GATES_CSV="$1"
     local ARGUMENTS=(
         "--log-file ${MD_DEFAULT['log-file']}"
         "--config-file ${MD_DEFAULT['conf-json-file']}"
@@ -15,12 +45,32 @@ function format_floodgate_cargo_constant_args() {
     if [[ ${MD_DEFAULT['debug']} == 'on' ]]; then
         local ARGUMENTS=( ${ARGUMENTS[@]} '--debug' )
     fi
+    if [ -z "$GATES_CSV" ]; then
+        local ARGUMENTS=( ${ARGUMENTS[@]} "--gate ${MD_DEFAULT['gates-csv']}" )
+    else
+        local ARGUMENTS=( ${ARGUMENTS[@]} "--gate $GATES_CSV" )
+    fi
     echo -n "${ARGUMENTS[@]}"
     return $?
 }
 
 function format_setup_machine_cargo_arguments() {
     local ARGUMENTS=( `format_floodgate_cargo_constant_args` '--action setup' )
+    echo -n "${ARGUMENTS[@]}"
+    return $?
+}
+
+function format_check_gates_cargo_arguments() {
+    local GATES_CSV="$1"
+    local ARGUMENTS=(
+        `format_floodgate_cargo_constant_args`
+        "--action check-gates"
+    )
+    if [ -z "$GATES_CSV" ]; then
+        local ARGUMENTS=( ${ARGUMENTS[@]} "--gate ${MD_DEFAULT['gates-csv']}" )
+    else
+        local ARGUMENTS=( ${ARGUMENTS[@]} "--gate $GATES_CSV" )
+    fi
     echo -n "${ARGUMENTS[@]}"
     return $?
 }
@@ -102,6 +152,7 @@ function format_config_json_file_content() {
          "debug":            `format_config_json_flag ${MD_DEFAULT['debug']}`,
          "silence":          `format_config_json_flag ${MD_DEFAULT['silence']}`,
          "machine-id":       "${MD_DEFAULT['machine-id']}",
+         "machine-ip":       "${MD_DEFAULT['machine-ip']}",
          "system-user":      "${MD_DEFAULT['system-user']}",
          "system-pass":      "${MD_DEFAULT['system-pass']}",
          "system-perms":      ${MD_DEFAULT['system-perms']},
@@ -111,6 +162,7 @@ function format_config_json_file_content() {
          "bashrc-file":      "${MD_DEFAULT['bashrc-file']}",
          "bashrc-template":  "${MD_DEFAULT['bashrc-template']}",
          "bashaliases-file": "${MD_DEFAULT['bashaliases-file']}",
+         "gate-index":       "${MD_DEFAULT['gate-index']}"
     },
     "GK_CARGO": {
         "gate-keeper":       "${MD_CARGO['gate-keeper']}"
@@ -126,7 +178,7 @@ function format_display_manual_ctrl_settings_args () {
 }
 
 function format_display_main_settings_args () {
-    local ARGUMENTS=( 'machine-id' 'local-ip' 'external-ip' )
+    local ARGUMENTS=( 'machine-id' 'local-ip' 'external-ip' 'gate-status' )
     echo ${ARGUMENTS[@]}
     return $?
 }

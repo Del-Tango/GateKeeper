@@ -9,13 +9,27 @@ import logging
 
 from .bp_shell import shell_cmd as shell
 
-log = logging.getLogger('FloodGateHEAD')
+log = logging.getLogger('GateKeeper')
+
+
+def read_from_file(*args, file_path=str(), mode='r', **kwargs):
+    log.debug('')
+    content = []
+    if not os.path.exists(file_path):
+        return False
+    with open(file_path, mode, encoding='utf-8', errors='ignore') \
+            as active_file:
+        content = [line.strip('\n') for line in active_file.readlines()]
+    log.debug('Read from file ({}):\n\n{}'. format(file_path, content))
+    return content
+
 
 def clear_screen(silence_flag):
     log.debug('')
     if silence_flag:
         return False
     return os.system('cls' if os.name == 'nt' else 'clear')
+
 
 #@pysnooper.snoop()
 def write2file(*args, file_path=str(), mode='w', **kwargs):

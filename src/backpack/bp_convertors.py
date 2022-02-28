@@ -8,7 +8,7 @@ import json
 import logging
 import os
 
-log = logging.getLogger('FloodGateHEAD')
+log = logging.getLogger('GateKeeper')
 
 
 def json2dict(file_path):
