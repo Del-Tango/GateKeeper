@@ -4,6 +4,13 @@
 #
 # ACTIONS
 
+function action_floodgate_cargo() {
+    local ARGUMENTS=( $@ )
+    trap 'trap - SIGINT; echo ''[ SIGINT ]: Aborting action.''; return 0' SIGINT
+    echo; ${GK_CARGO['gate-keeper']} ${ARGUMENTS[@]}; trap - SIGINT
+    return $?
+}
+
 function action_command_watchdog() {
     local OPTIONS=( 'Start-CMD-Watchdog' 'Stop-CMD-Watchdog' )
     echo; while :; do
@@ -69,8 +76,7 @@ function cli_action_start_watchdog() {
         return 0
     fi
     local ARGUMENTS=( `format_start_watchdog_cargo_arguments` )
-    echo "
-[ INFO ]: Starting Gate CMD Watchdog...
+    echo "[ INFO ]: Starting Gate CMD Watchdog...
 [ INFO ]: Executing (${MAGENTA}`format_cargo_exec_string ${ARGUMENTS[@]}`${RESET})"
     action_floodgate_cargo ${ARGUMENTS[@]} &> /dev/null &
     local WATCHDOG_PID=$!
@@ -625,10 +631,4 @@ function cli_update_config_json_file() {
     return $?
 }
 
-function action_floodgate_cargo() {
-    local ARGUMENTS=( $@ )
-    trap 'trap - SIGINT; echo ''[ SIGINT ]: Aborting action.''; return 0' SIGINT
-    echo; ${GK_CARGO['gate-keeper']} ${ARGUMENTS[@]}; trap - SIGINT
-    return $?
-}
 

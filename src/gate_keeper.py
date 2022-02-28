@@ -60,6 +60,7 @@ GK_DEFAULT = {
     'wifi-pass': 'gatekeeper',
     'gpio-mode': GPIO.BCM,
     'pi-warnings': False,
+    'watchdog-interval': 0.1,
 }
 GK_CARGO = {
     'gate-keeper': __file__,
@@ -138,12 +139,25 @@ def check_action_privileges():
 
 # ACTIONS
 
-# TODO
 #@pysnooper.snoop()
 def action_start_watchdog(*args, **kwargs):
-    log.debug('WARNING: Under construction, building...')
+    log.debug('')
     while True:
-        pass
+        cmd_open = GPIO.input(GK_PINS['in']['gate1-open'])
+        log.debug('CMD Watchdog scan - Open pin ({}) state: ({})'.format(
+            GK_PINS['in']['gate1-open'], cmd_open
+        ))
+        if cmd_open == 1:
+            log.info('CMD Watchdog - Opening gates!')
+            action_open_gates 'all'
+        cmd_close = GPIO.input(GK_PINS['in']['gate1-close'])
+        log.debug('CMD Watchdog scan - Close pin ({}) state: ({})'.format(
+            GK_PINS['in']['gate1-open'], cmd_close
+        ))
+        if cmd_open == 1:
+            log.info('CMD Watchdog - Closing gates!')
+            action_close_gates 'all'
+        time.sleep(GK_DEFAULT['watchdog-interval'])
 
 def action_setup(*args, **kwargs):
     log.debug('')
