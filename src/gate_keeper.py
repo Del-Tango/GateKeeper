@@ -64,7 +64,7 @@ GK_DEFAULT = {
 GK_CARGO = {
     'gate-keeper': __file__,
 }
-GK_ACTIONS_CSV = str() # (open-gates | close-gates | check-gates | help | setup | setup,open-gate)
+GK_ACTIONS_CSV = str() # (open-gates | close-gates | check-gates | start-watchdog | help | setup | setup,open-gate)
 GK_GATES_CSV = str()   # (1 | all ,etc) - [ NOTE ]: Makes no sense now, but it will, when you try controlling multiple gates
 
 # Cold Parameters
@@ -512,7 +512,7 @@ def format_usage_string():
     -a | --action ACTIONS-CSV      Action to execute - Valid values include one
        |                           or more of the following labels given as a CSV
        |                           string: (open-gates | close-gates | check-gates
-       |                           | setup)
+       |                           | start-watchdog | setup)
 
     -g | --gate GATE-CSV           Implies --action (open-gates | close-gates)
        |                           Head unit flood gate ID's given as a CSV string:

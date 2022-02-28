@@ -4,16 +4,6 @@
 #
 # ACTIONS
 
-function action_start_command_watchdog() {
-    cli_start_command_watchdog
-    return 0
-}
-
-function action_stop_command_watchdog() {
-    cli_stop_command_watchdog
-    return 0
-}
-
 function action_command_watchdog() {
     local OPTIONS=( 'Start-CMD-Watchdog' 'Stop-CMD-Watchdog' )
     echo; while :; do
@@ -28,10 +18,10 @@ function action_command_watchdog() {
     done
     case "$ACTION" in
         'Start-CMD-Watchdog')
-            action_start_command_watchdog
+            cli_action_start_command_watchdog
         ;;
         'Stop-CMD-Watchdog')
-            action_stop_command_watchdog
+            cli_action_stop_command_watchdog
         ;;
         *)
             warning_msg "Invalid option! (${RED}$ACTION${RESET})"
@@ -69,7 +59,8 @@ function cli_action_stop_watchdog() {
 function cli_action_start_watchdog() {
     local ARGUMENTS=( `format_start_watchdog_cargo_arguments` )
     echo "
-[ INFO ]: About to execute (${MAGENTA}`format_cargo_exec_string ${ARGUMENTS[@]}`${RESET})"
+[ INFO ]: Starting Gate CMD Watchdog...
+[ INFO ]: Executing (${MAGENTA}`format_cargo_exec_string ${ARGUMENTS[@]}`${RESET})"
     action_floodgate_cargo ${ARGUMENTS[@]} &> /dev/null &
     local WATCHDOG_PID=$!
     if [ -z "$WATCHDOG_PID" ]; then
@@ -77,6 +68,7 @@ function cli_action_start_watchdog() {
         return 1
     fi
     echo $WATCHDOG_PID > ${MD_DEFAULT['pid-cmd-wdg']}
+    echo "[ OK ]: CMD Watchdog PID: ${WATCHDOG_PID}"
     return $?
 }
 
