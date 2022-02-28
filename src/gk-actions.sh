@@ -32,6 +32,11 @@ function action_command_watchdog() {
 }
 
 function cli_action_stop_watchdog() {
+    check_command_watchdog_running
+    if [ $? -ne 0 ]; then
+        echo "[ WARNING ]: CMD Watchdog not running!"
+        return 0
+    fi
     echo "[ INFO ]: Stopping Gate CMD Watchdog..."
     touch ${MD_DEFAULT['pid-cmd-wdg']}
     local WATCHDOG_PID=`cat ${MD_DEFAULT['pid-cmd-wdg']}`
@@ -57,6 +62,12 @@ function cli_action_stop_watchdog() {
 }
 
 function cli_action_start_watchdog() {
+    check_command_watchdog_running
+    if [ $? -eq 0 ]; then
+        local WATCHDOG_PID=`cat ${MD_DEFAULT['pid-cmd-wdg']}`
+        echo "[ WARNING ]: CMD Watchdog already running! PID: ${WATCHDOG_PID}"
+        return 0
+    fi
     local ARGUMENTS=( `format_start_watchdog_cargo_arguments` )
     echo "
 [ INFO ]: Starting Gate CMD Watchdog...
