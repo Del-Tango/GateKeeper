@@ -17,3 +17,4 @@ def generate_msg_id(id_length, id_characters=list(string.ascii_letters + string.
     spl_msg_id = [random.choice(id_characters) for i in range(id_length)]
     random.shuffle(spl_msg_id)
     return ''.join(spl_msg_id)
+

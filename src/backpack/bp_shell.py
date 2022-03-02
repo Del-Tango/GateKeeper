@@ -20,3 +20,4 @@ def shell_cmd(command, user=None):
     output, errors = process.communicate()
     log.debug('Output: ({}), Errors: ({})'.format(output, errors))
     return  str(output).rstrip('\n'), str(errors).rstrip('\n'), process.returncode
+

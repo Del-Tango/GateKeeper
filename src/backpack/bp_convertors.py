@@ -20,6 +20,7 @@ def json2dict(file_path):
     log.debug('Converted JSON: ({})'.format(converted))
     return converted
 
+
 def dict2json(dict_obj):
     if not dict_obj:
         log.warning('No data to convert! ({})'.format(dict_obj))
@@ -27,6 +28,7 @@ def dict2json(dict_obj):
     converted = json.dumps(dict_obj, indent=4)
     log.debug('Converted JSON: ({})'.format(converted))
     return converted
+
 
 def file2list(file_path):
     if not file_path or not os.path.exists(file_path):
@@ -36,3 +38,4 @@ def file2list(file_path):
         converted = fl.readlines()
     log.debug('Lines read from file: ({})'.format(converted))
     return converted
+

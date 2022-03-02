@@ -20,7 +20,8 @@ from backpack.bp_ensurance import ensure_files_exist,ensure_directories_exist
 from backpack.bp_shell import shell_cmd
 from backpack.bp_checkers import check_file_exists, check_superuser
 from backpack.bp_threads import threadify
-from backpack.bp_general import stdout_msg, clear_screen, write2file, read_from_file
+from backpack.bp_convertors import file2list
+from backpack.bp_general import stdout_msg, clear_screen, write2file
 from backpack.bp_filters import filter_file_name_from_path, filter_directory_from_path
 
 # Hot Parameters
@@ -253,7 +254,7 @@ def check_gate():
             GK_DEFAULT['gate-index']
         ))
         return False
-    gate_index_content = read_from_file(file_path=GK_DEFAULT['gate-index'])
+    gate_index_content = file2list(GK_DEFAULT['gate-index'])
     if not gate_index_content or len(gate_index_content) == 0:
         stdout_msg('[ WARNING ]: Could not read gate index file! ({})'.format(
             GK_DEFAULT['gate-index']
