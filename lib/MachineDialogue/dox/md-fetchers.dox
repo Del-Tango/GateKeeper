@@ -50,5 +50,10 @@ fetch_alive_lan_machines_ipv4_addresses
 fetch_alive_lan_machines_mac_addresses
 fetch_all_wireless_interfaces
 fetch_currently_connected_gateway_essid
+fetch_file_path_from_user                           <prompt>
+fetch_directory_from_user                           <prompt>
+fetch_string_from_user                              <prompt>
+fetch_password_from_user                            <prompt>
+fetch_number_from_user                              <prompt>
 
 EOF

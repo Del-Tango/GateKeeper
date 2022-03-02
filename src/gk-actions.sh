@@ -4,6 +4,25 @@
 #
 # ACTIONS
 
+function action_set_machine_id() {
+    echo; info_msg "Setting ${BLUE}$SCRIPT_NAME${RESET} machine ID -"
+    info_msg "Type machine ID or (${MAGENTA}.back${RESET})."
+    local MACHINE_ID=`fetch_string_from_user 'MachineID'`
+    if [ $? -ne 0 ] || [ -z "$MACHINE_ID" ]; then
+        echo; info_msg 'Aborting action.'
+        return 0
+    fi
+    set_machine_id "$MACHINE_ID"
+    local EXIT_CODE=$?
+    echo; if [ $EXIT_CODE -ne 0 ]; then
+        nok_msg "Something went wrong."\
+            "Could not set machine ID (${RED}$MACHINE_ID${RESET})"
+    else
+        ok_msg "Successfully set machine ID (${GREEN}$MACHINE_ID${RESET})."
+    fi
+    return $EXIT_CODE
+}
+
 function action_floodgate_cargo() {
     local ARGUMENTS=( $@ )
     trap 'trap - SIGINT; echo ''[ SIGINT ]: Aborting action.''; return 0' SIGINT
@@ -121,7 +140,8 @@ function action_gate_status_check() {
 }
 
 function action_set_gate_csv(){
-    echo; info_msg "Setting ${BLUE}$SCRIPT_NAME${RESET} gate ID CSV -"
+    echo; info_msg "Setting ${BLUE}$SCRIPT_NAME${RESET} gate ID CSV (ex: 1 | all) -"
+    warning_msg "${BLUE}${GK_SCRIPT_NAME}${RESET} ${RED}v${GK_VERSION_NO}${GK_VERSION}${RESET} only supports one gate!"
     info_msg "Type CSV string or (${MAGENTA}.back${RESET})."
     local GATE_CSV=`fetch_string_from_user 'Gates(CSV)'`
     if [ $? -ne 0 ] || [ -z "$GATE_CSV" ]; then
@@ -140,7 +160,7 @@ function action_set_gate_csv(){
 }
 
 function action_set_debug_flag() {
-    echo; case "$FG_DEFAULT['debug']" in
+    echo; case "${GK_DEFAULT['debug']}" in
         'on'|'On'|'ON')
             info_msg "Debug is (${GREEN}ON${RESET}), switching to (${RED}OFF${RESET}) -"
             action_set_debug_off
@@ -158,7 +178,7 @@ function action_set_debug_flag() {
 }
 
 function action_set_silence_flag() {
-    echo; case "$FG_DEFAULT['silence']" in
+    echo; case "${GK_DEFAULT['silence']}" in
         'on'|'On'|'ON')
             info_msg "Silence is (${GREEN}ON${RESET}), switching to (${RED}OFF${RESET}) -"
             action_set_silence_off
@@ -385,10 +405,10 @@ function action_set_wifi_password() {
     set_wifi_password $WIFI_PSK
     local EXIT_CODE=$?
     echo; if [ $EXIT_CODE -ne 0 ]; then
-        nok_msg "Something went wrong."\
-            "Could not set wireless gateway password (${RED}$WIFI_PSK${RESET})"
+        nok_msg "Something went wrong!"\
+            "Could not set wireless gateway password."
     else
-        ok_msg "Successfully set wireless gateway password (${GREEN}$WIFI_PSK${RESET})."
+        ok_msg "Successfully set wireless gateway password."
     fi
     return $EXIT_CODE
 }
@@ -423,10 +443,10 @@ function action_set_system_password() {
     set_system_password $SYS_PASS
     local EXIT_CODE=$?
     echo; if [ $EXIT_CODE -ne 0 ]; then
-        nok_msg "Something went wrong."\
-            "Could not set system password (${RED}$SYS_PASS${RESET})"
+        nok_msg "Something went wrong!"\
+            "Could not set system password."
     else
-        ok_msg "Successfully set system password (${GREEN}$SYS_PASS${RESET})."
+        ok_msg "Successfully set system password."
     fi
     return $EXIT_CODE
 }

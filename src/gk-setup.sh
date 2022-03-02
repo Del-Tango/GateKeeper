@@ -326,6 +326,13 @@ function setup_settings_menu_option_install_dependencies () {
     return $?
 }
 
+function setup_settings_menu_option_set_machine_id () {
+    setup_menu_controller_action_option \
+        "$SETTINGS_CONTROLLER_LABEL" 'Set-Machine-ID' \
+        'action_set_machine_id'
+    return $?
+}
+
 function setup_settings_menu_option_back () {
     setup_menu_controller_action_option \
         "$SETTINGS_CONTROLLER_LABEL" 'Back' 'action_back'
@@ -353,6 +360,7 @@ function setup_settings_menu_controller () {
     setup_settings_menu_option_set_silent_flag
     setup_settings_menu_option_set_log_file
     setup_settings_menu_option_set_log_lines
+    setup_settings_menu_option_set_machine_id
     setup_settings_menu_option_install_dependencies
     setup_settings_menu_option_back
     done_msg "(${CYAN}$SETTINGS_CONTROLLER_LABEL${RESET}) controller"\

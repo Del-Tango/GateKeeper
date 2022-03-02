@@ -144,16 +144,16 @@ def action_start_watchdog(*args, **kwargs):
     log.debug('')
     while True:
         cmd_open = GPIO.input(GK_PINS['in']['gate1-open'])
-        log.debug('CMD Watchdog scan - Open pin ({}) state: ({})'.format(
-            GK_PINS['in']['gate1-open'], cmd_open
-        ))
+#       log.debug('CMD Watchdog scan - Open pin ({}) state: ({})'.format(
+#           GK_PINS['in']['gate1-open'], cmd_open
+#       ))
         if cmd_open == 1:
             log.info('CMD Watchdog - Opening gates!')
             action_open_gates('all')
         cmd_close = GPIO.input(GK_PINS['in']['gate1-close'])
-        log.debug('CMD Watchdog scan - Close pin ({}) state: ({})'.format(
-            GK_PINS['in']['gate1-close'], cmd_close
-        ))
+#       log.debug('CMD Watchdog scan - Close pin ({}) state: ({})'.format(
+#           GK_PINS['in']['gate1-close'], cmd_close
+#       ))
         if cmd_close == 1:
             log.info('CMD Watchdog - Closing gates!')
             action_close_gates('all')
@@ -748,7 +748,8 @@ def add_command_line_parser_options(parser):
     parser.add_option(
         '-a', '--action', dest='action_csv', type='string', metavar='ACTION-CSV',
         help='Action to execute - valid values include one or more of the '
-            'following labels given as a CSV string: (open-gates | close-gates | setup)'
+            'following labels given as a CSV string: (open-gates | close-gates '
+            '| setup | check-gates | start-watchdog)'
     )
     parser.add_option(
         '-g', '--gate', dest='gate_csv', type='string', metavar='GATES-CSV',

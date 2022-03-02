@@ -4,6 +4,82 @@
 #
 # FETCHERS
 
+function fetch_number_from_user() {
+    PROMPT_STR="${1:-Number}"
+    INT_DATA=''
+    while :; do
+        INT_DATA=`fetch_data_from_user "$PROMPT_STR"`
+        if [ $? -ne 0 ]; then
+            return 1
+        fi
+        check_value_is_number $INT_DATA
+        if [ $? -ne 0 ]; then
+            debug_msg "Value must be a number, not (${RED}$INT_DATA${RESET})."
+            echo; continue
+        fi; break
+    done
+    echo $INT_DATA
+    return $?
+}
+
+function fetch_password_from_user() {
+    PROMPT_STR="${1:-Password}"
+    PASS_DATA=`fetch_data_from_user "$PROMPT_STR" 'password'`
+    if [ $? -ne 0 ]; then
+        return 1
+    fi
+    echo $PASS_DATA
+    return $?
+}
+
+function fetch_string_from_user() {
+    PROMPT_STR="${1:-String}"
+    STR_DATA=`fetch_data_from_user "$PROMPT_STR"`
+    if [ $? -ne 0 ]; then
+        return 1
+    fi
+    echo $STR_DATA
+    return $?
+}
+
+function fetch_directory_from_user() {
+    PROMPT_STR="${1:-DirPath}"
+    DIR_PATH=''
+    while :; do
+        DIR_PATH=`fetch_data_from_user "$PROMPT_STR"`
+        if [ $? -ne 0 ]; then
+            return 1
+        fi
+        check_directory_exists "$DIR_PATH"
+        if [ $? -ne 0 ]; then
+            debug_msg "File (${RED}$DIR_PATH${RESET}) does not exists."
+            continue
+        fi; break
+    done
+    echo $DIR_PATH
+    return $?
+}
+
+function fetch_file_path_from_user() {
+#   [ NOTE ]: Wrapper that also validates the file path.
+    PROMPT_STR="${1:-FilePath}"
+    FILE_PATH=''
+    while :; do
+        FILE_PATH=`fetch_data_from_user "$PROMPT_STR"`
+        if [ $? -ne 0 ]; then
+            return 1
+        fi
+        check_file_exists "$FILE_PATH"
+        if [ $? -ne 0 ]; then
+            warning_msg "File (${RED}$FILE_PATH${RESET}) does not exists.
+            "
+            continue
+        fi; break
+    done
+    echo $FILE_PATH
+    return $?
+}
+
 function fetch_all_available_block_devices () {
     AVAILABLE_DEVS=(
         `lsblk | \
