@@ -66,12 +66,13 @@ GK_DEFAULT = {
     'gpio-mode': GPIO.BCM,
     'pi-warnings': False,
     'watchdog-interval': 0.2,
+    'cmd-signal-length': 1,     # Seconds
 }
 GK_CARGO = {
     'gate-keeper': __file__,
 }
 GK_ACTIONS_CSV = str() # (open-gates | close-gates | check-gates | start-watchdog | help | setup | setup,open-gate)
-GK_GATES_CSV = str()   # (1 | all ,etc) - [ NOTE ]: Makes no sense now, but it will, when you try controlling multiple gates
+GK_GATES_CSV = str()   # (gate1-open | gate1-close | (all -> gate1-XXXX, gate2-XXXX, etc)) - [ NOTE ]: Makes no sense now, but it will, when you try controlling multiple gates
 
 # Cold Parameters
 
@@ -144,6 +145,32 @@ def check_action_privileges():
 
 # ACTIONS
 
+#@pysnooper.snoop('log/gate-keeper.log')
+def action_close_gates(*args, **kwargs):
+    log.debug('')
+    targets = ['all'] if 'all' in args else [int(item) for item in args]
+    stdout_msg('[ INFO ]: Closing gates... ({})'.format(targets))
+    action = close_gate(*targets)
+    if not action:
+        stdout_msg("[ NOK ]: Could not close gates! ({})".format(args))
+        return 1
+    stdout_msg("[ OK ]: Gates closed! ({})".format(args))
+    write = write2file(*GK_GATE_MAP, file_path=GK_DEFAULT['gate-index'])
+    return 1 if not write else 0
+
+#@pysnooper.snoop('log/gate-keeper.log')
+def action_open_gates(*args, **kwargs):
+    log.debug('')
+    targets = ['all'] if 'all' in args else [int(item) for item in args]
+    stdout_msg('[ INFO ]: Opening gates... ({})'.format(targets))
+    action = open_gate(*targets)
+    if not action:
+        stdout_msg("[ NOK ]: Could not open gates! ({})".format(targets))
+        return 1
+    stdout_msg("[ OK ]: Gates open! ({})".format(targets))
+    write = write2file(*GK_GATE_MAP, file_path=GK_DEFAULT['gate-index'])
+    return 1 if not write else 0
+
 #@pysnooper.snoop()
 def action_start_watchdog(*args, **kwargs):
     log.debug('')
@@ -189,41 +216,66 @@ def action_check_gates(*args, **kwargs):
     stdout_msg("[ OK ]: Gate status check!")
     return 0
 
-#@pysnooper.snoop()
-def action_close_gates(*args, **kwargs):
-    log.debug('')
-    targets = ['all'] if 'all' in args else [int(item) for item in args]
-    stdout_msg('[ INFO ]: Closing flood gates... ({})'.format(targets))
-    action = close_gate(*targets)
-    if not action:
-        stdout_msg("[ NOK ]: Could not close HEAD flood gates! ({})".format(args))
-        return 1
-    stdout_msg("[ OK ]: Gates closed! ({})".format(args))
-    write = write2file(*GK_GATE_MAP, file_path=GK_DEFAULT['gate-index'])
-    return 1 if not write else 0
-
-#@pysnooper.snoop()
-def action_open_gates(*args, **kwargs):
-    log.debug('')
-    targets = ['all'] if 'all' in args else [int(item) for item in args]
-    stdout_msg('[ INFO ]: Opening flood gates... ({})'.format(targets))
-    action = open_gate(*targets)
-    if not action:
-        stdout_msg("[ NOK ]: Could not open HEAD flood gates! ({})".format(targets))
-        return 1
-    stdout_msg("[ OK ]: Gates open! ({})".format(targets))
-    write = write2file(*GK_GATE_MAP, file_path=GK_DEFAULT['gate-index'])
-    return 1 if not write else 0
-
 # GENERAL
 
-#@pysnooper.snoop()
-def gate_position_open(gate_ids, state=True):
+#@pysnooper.snoop('log/gate-keeper.log')
+def signal_gate(state, *gate_ids):
     '''
-    [ NOTE ]: Turns on the relay that opens the gate, until the fully-open
-              button gets pressed which turns it off.
+    [ INPUT ]: (gate1-open | gate1-close), all, ALL
+    [ NOTE  ]: Triggers OPEN and CLOSE gate relays
     '''
+    global GK_GATE_MAP
     log.debug('')
+    stage1_threads, stage2_threads = list(), list()
+    stage1_return_values, stage2_return_values, failures = list(), list(), 0
+    if 'all' in gate_ids or 'ALL' in gate_ids:
+        handlers = {
+            'Open': open_all_flood_gates,
+            'Closed': close_all_flood_gates,
+        }
+        return False if state not in handlers.keys() else handlers[state]()
+
+    for gate_id in gate_ids:
+        s1_t = threading.Thread(
+            target=gate_position_open, args=([gate_id], True, stage1_return_values)
+        )
+        stage1_threads.append(s1_t)
+        s2_t = threading.Thread(
+            target=gate_position_close, args=([gate_id], False, stage2_return_values)
+        )
+        stage2_threads.append(s2_t)
+
+    for thread in stage1_threads:
+        thread.start()
+        thread.join()
+
+    # Length of time OPEN relay stays... well, open
+    time.sleep(GK_DEFAULT['cmd-signal-length'])
+
+    for thread in stage2_threads:
+        thread.start()
+        thread.join()
+
+    for s1_ret, s2_ret in zip(stage1_return_values, stage2_return_values):
+        if not s1_ret or not s2_ret:
+            failures += 1
+
+    # WARNING: System currently supports 1 gate only - To be refactored when
+    #          adding multi-gate support.
+    if not failures:
+        GK_GATE_MAP = [GK_GATE_STATES[state]]
+
+    return True if not failures else False
+
+#@pysnooper.snoop('log/gate-keeper.log')
+def gate_position_open(gate_ids, state=True, return_values=[]):
+    '''
+    [ NOTE    ]: Turns on the relay that opens the gate, until the fully-open
+                 button gets pressed which turns it off.
+    [ WARNING ]: Broad exception clause!
+    '''
+    log.debug('TODO: Refactor')
+    return_value = True
     try:
         for gate_id in gate_ids:
             GPIO.output(
@@ -231,25 +283,49 @@ def gate_position_open(gate_ids, state=True):
             )
     except Exception as e:
         log.error(e)
-        return False
-    return True
+        return_value = False
+    return_values.append(return_value)
+    return return_value
+
+#@pysnooper.snoop('log/gate-keeper.log')
+def gate_position_close(gate_ids, state=True, return_values=[]):
+    '''
+    [ NOTE    ]: Turns on the relay that closes the gate, until the fully-closed
+                 button gets pressed which turns it off.
+    [ WARNING ]: Broad exception clause!
+    '''
+    log.debug('TODO: Refactor')
+    return_value = True
+    try:
+        for gate_id in gate_ids:
+            GPIO.output(
+                GK_PINS['out'][gate_id], GK_GATE_STATES[state]
+            )
+    except Exception as e:
+        log.error(e)
+        return_value = False
+    return_values.append(return_value)
+    return return_value
 
 #@pysnooper.snoop()
-def gate_position_close(gate_ids, state=True):
+def open_gate(*gate_ids):
     '''
-    [ NOTE ]: Turns on the relay that closes the gate, until the fully-closed
-              button gets pressed which turns it off.
+    [ INPUT ]: (gate1-open | gate1-close), all, ALL
+    [ NOTE  ]: Wrapper function of signal_gate() for improved readability
     '''
     log.debug('')
-    try:
-        for gate_id in gate_ids:
-            GPIO.output(
-                GK_PINS['out'][gate_id], GK_GATE_STATES[state]
-            )
-    except Exception as e:
-        log.error(e)
-        return False
-    return True
+    # WARNING: System currently supports 1 gate only - To be refactored when
+    #          adding multi-gate support.
+    return signal_gate('Open', *gate_ids)
+
+#@pysnooper.snoop()
+def close_gate(*gate_ids):
+    '''
+    [ INPUT ]: (gate1-open | gate1-close), all, ALL
+    [ NOTE ]: Wrapper function of signal_gate() for improved readability
+    '''
+    log.debug('')
+    return signal_gate('Closed', *gate_ids)
 
 def check_gate():
     log.debug('')
@@ -275,46 +351,6 @@ def check_gate():
             )
         )
     return True if display_content else False
-
-#@pysnooper.snoop()
-def open_gate(*gate_ids):
-    '''
-    [ INPUT ]: 1, all, ALL
-    '''
-    log.debug('')
-    global GK_GATE_MAP
-    threads = list()
-    for gate_id in gate_ids:
-        if gate_id == 'all' or gate_id == 'ALL':
-            return open_all_flood_gates()
-        t = threading.Thread(target=gate_position_open, args=([gate_id], True,))
-        threads.append(t)
-        # WARNING: System currently supports 1 gate only
-        GK_GATE_MAP = [GK_GATE_STATES['Open']]
-    for thread in threads:
-        thread.start()
-        thread.join()
-    return True
-
-#@pysnooper.snoop()
-def close_gate(*gate_ids):
-    '''
-    [ INPUT ]: 1, all, ALL
-    '''
-    log.debug('')
-    global GK_GATE_MAP
-    threads = list()
-    for gate_id in gate_ids:
-        if gate_id == 'all' or gate_id == 'ALL':
-            return close_all_flood_gates()
-        t = threading.Thread(target=gate_position_close, args=([gate_id], False,))
-        threads.append(t)
-        # WARNING: System currently supports 1 gate only
-        GK_GATE_MAP = [GK_GATE_STATES['Closed']]
-    for thread in threads:
-        thread.start()
-        thread.join()
-    return True
 
 #@pysnooper.snoop()
 def load_gate_index_from_file(file_path):
@@ -519,7 +555,7 @@ def format_usage_string():
     usage = '''
     -h | --help                    Display this message.
 
-    -S | --setup                   Setup current machine as Gate Keeper HEAD -
+    -S | --setup                   Setup current machine as Gate Keeper -
        |                           Script designed for the Raspberry Pi Zero W.
        |                           Argument same as (--action setup).
 
@@ -580,7 +616,7 @@ def create_system_user():
 def create_command_line_parser():
     log.debug('')
     help_msg = format_header_string() + '''
-    [ EXAMPLE ]: Setup gatekeeper HEAD unit -
+    [ EXAMPLE ]: Setup Gate Keeper unit -
 
         ~$ %prog \\
             -S  | --setup \\
@@ -591,7 +627,7 @@ def create_command_line_parser():
 
         ~$ %prog \\
             -a  | --action open-gates \\
-            -g  | --gate 1,2 \\
+            -g  | --gate all \\
             -s  | --silence \\
             -c  | --config-file /etc/conf/gate-keeper.conf.json \\
             -l  | --log-file /etc/log/gate-keeper.log'''
@@ -952,9 +988,12 @@ def setup_system_user_permissions():
     stdout_msg('[ INFO ]: Setting up user HOME permissions...')
     home_dir = GK_DEFAULT['home-dir'] + '/' + GK_DEFAULT['system-user']
     owner_out, owner_err, owner_exit = shell_cmd(
-        'chown ' + GK_DEFAULT['system-user'] + ' ' + home_dir + ' &> /dev/null'
+        'chown -R ' + GK_DEFAULT['system-user'] + ' ' + home_dir + ' &> /dev/null'
     )
-    if owner_exit != 0:
+    group_out, group_err, group_exit = shell_cmd(
+        'chgrp -R ' + GK_DEFAULT['system-user'] + ' ' + home_dir + ' &> /dev/null'
+    )
+    if owner_exit != 0 or group_exit != 0:
         stdout_msg(
             '[ NOK ]: Could not set ({}) as owner of directory ({})!'\
             .format(GK_DEFAULT['system-user'], home_dir)

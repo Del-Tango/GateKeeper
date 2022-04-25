@@ -84,7 +84,7 @@ function setup_manual_ctrl_menu_controller() {
     setup_manual_ctrl_menu_option_open_flood_gates
     setup_manual_ctrl_menu_option_close_flood_gates
     setup_manual_ctrl_menu_option_gate_status_check
-    setup_manual_ctrl_menu_option_command_watchdog
+#   setup_manual_ctrl_menu_option_command_watchdog
     setup_manual_ctrl_menu_option_help
     setup_manual_ctrl_menu_option_back
     done_msg "(${CYAN}$MANUALCTL_CONTROLLER_LABEL${RESET}) controller"\
@@ -92,6 +92,7 @@ function setup_manual_ctrl_menu_controller() {
     return 0
 }
 
+# WARNING: Unused
 function setup_manual_ctrl_menu_option_command_watchdog() {
     setup_menu_controller_action_option \
         "$MANUALCTL_CONTROLLER_LABEL" 'CMD-Watchdog' \

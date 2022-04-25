@@ -97,7 +97,7 @@ function display_banners () {
 }
 
 function display_gate_status() {
-    local CONTENT="`cat ${MD_DEFAULT['gate-index']} | xargs`"
+    local CONTENT="`cat ${MD_DEFAULT['gate-index']} 2> /dev/null | xargs`"
     debug_msg "Gate index content: (${CONTENT})"
     if [ ! -f "${MD_DEFAULT['gate-index']}" ] || [[ -z "${CONTENT}" ]]; then
         local VALUE="${RED}Unknown${RESET}"

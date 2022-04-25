@@ -83,14 +83,9 @@ function format_check_gates_cargo_arguments() {
 function format_close_gates_cargo_arguments() {
     local GATES_CSV="$1"
     local ARGUMENTS=(
-        `format_floodgate_cargo_constant_args`
+        `format_floodgate_cargo_constant_args "${GATES_CSV}"`
         "--action close-gates"
     )
-    if [ -z "$GATES_CSV" ]; then
-        local ARGUMENTS=( ${ARGUMENTS[@]} "--gate ${MD_DEFAULT['gates-csv']}" )
-    else
-        local ARGUMENTS=( ${ARGUMENTS[@]} "--gate $GATES_CSV" )
-    fi
     echo -n "${ARGUMENTS[@]}"
     return $?
 }
@@ -98,14 +93,9 @@ function format_close_gates_cargo_arguments() {
 function format_open_gates_cargo_arguments() {
     local GATES_CSV="$1"
     local ARGUMENTS=(
-        `format_floodgate_cargo_constant_args`
+        `format_floodgate_cargo_constant_args "${GATES_CSV}"`
         "--action open-gates"
     )
-    if [ -z "$GATES_CSV" ]; then
-        local ARGUMENTS=( ${ARGUMENTS[@]} "--gate ${MD_DEFAULT['gates-csv']}" )
-    else
-        local ARGUMENTS=( ${ARGUMENTS[@]} "--gate $GATES_CSV" )
-    fi
     echo -n "${ARGUMENTS[@]}"
     return $?
 }
