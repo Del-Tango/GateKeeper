@@ -1,0 +1,45 @@
+cat<<EOF
+  _____________________________________________________________________________
+
+                                  Gate Keeper DOX
+  _____________________________________________________________________________
+
+  * Service Network Details:
+    ________________________
+
+    WiFi ESSID: GateKeeperService
+    WiFi Pass: gatekeeper
+
+
+  * System Details:
+    ________________________
+
+    User: pi
+    Pass: gatekeeper
+    Root Pass: GateKeeperService
+
+
+  * Setup Procedure:
+    ________________________
+
+    [ NOTE ]: Login to Raspberry Pi as user "pi" and execute setup procedure -
+
+    user@machine:~ $ scp -r ./GateKeeper pi@xxx.xxx.xxx.xxx:.
+    user@machine:~ $ ssh pi@xxx.xxx.xxx.xxx
+    pi@localhost:~ $ sudo ./GateKeeper/gate-keeper --setup && reboot
+
+
+  * General Use:
+    ________________________
+
+    [ NOTE ]: Login to Raspberry Pi and execute service interface -
+
+    user@machine:~ $ ssh pi@GateKeeper01
+
+    [ NOTE ]: Execute OPEN/CLOSE actions from remote machine over SSH -
+
+    user@machine:~ $ ssh pi@GateKeeper01 './GateKeeper/gate-keeper --open-gates'
+    user@machine:~ $ ssh pi@GateKeeper01 './GateKeeper/gate-keeper --close-gates'
+
+  _____________________________________________________________________________
+EOF
