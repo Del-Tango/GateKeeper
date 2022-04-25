@@ -4,6 +4,10 @@
 #
 # Gate Keeper (Cargo)
 
+__author__ = 'Alveare Solutions'
+__version__ = '1.0'
+__maintainer__ = '#!/Society'
+
 import time
 import optparse
 import os
