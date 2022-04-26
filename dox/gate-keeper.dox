@@ -26,7 +26,7 @@ cat<<EOF
 
     user@machine:~ $ scp -r ./GateKeeper pi@xxx.xxx.xxx.xxx:.
     user@machine:~ $ ssh pi@xxx.xxx.xxx.xxx
-    pi@localhost:~ $ sudo ./GateKeeper/gate-keeper --setup && reboot
+    pi@localhost:~ $ cd ~/GateKeeper && sudo ./gate-keeper --setup && reboot
 
 
   * General Use:
