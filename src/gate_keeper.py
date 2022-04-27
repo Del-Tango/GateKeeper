@@ -71,8 +71,8 @@ GK_DEFAULT = {
 GK_CARGO = {
     'gate-keeper': __file__,
 }
-GK_ACTIONS_CSV = str() # (open-gates | close-gates | check-gates | start-watchdog | help | setup | setup,open-gate)
-GK_GATES_CSV = str()   # (gate1-open | gate1-close | (all -> gate1-XXXX, gate2-XXXX, etc)) - [ NOTE ]: Makes no sense now, but it will, when you try controlling multiple gates
+GK_ACTIONS_CSV = str() # (open-gates | close-gates | check-gates | start-watchdog | help | setup | setup,open-gates)
+GK_GATES_CSV = str()   # (1 | 2 | 1,2 | (all -> gate1-XXXX, gate2-XXXX, etc)) - [ NOTE ]: Makes no sense now, but it will, when you try controlling multiple gates
 
 # Cold Parameters
 
@@ -148,7 +148,9 @@ def check_action_privileges():
 #@pysnooper.snoop('log/gate-keeper.log')
 def action_close_gates(*args, **kwargs):
     log.debug('')
-    targets = ['all'] if 'all' in args else [int(item) for item in args]
+    targets = ['all'] if 'all' in args else [
+        'gate{}-close'.format(int(item)) for item in args
+    ]
     stdout_msg('[ INFO ]: Closing gates... ({})'.format(targets))
     action = close_gate(*targets)
     if not action:
@@ -161,8 +163,10 @@ def action_close_gates(*args, **kwargs):
 #@pysnooper.snoop('log/gate-keeper.log')
 def action_open_gates(*args, **kwargs):
     log.debug('')
-    targets = ['all'] if 'all' in args else [int(item) for item in args]
-    stdout_msg('[ INFO ]: Opening gates... ({})'.format(targets))
+    targets = ['all'] if 'all' in args else [
+        'gate{}-open'.format(int(item)) for item in args
+    ]
+    stdout_msg('[ INFO ]: Opening gates... ({})'.format(args))
     action = open_gate(*targets)
     if not action:
         stdout_msg("[ NOK ]: Could not open gates! ({})".format(targets))
