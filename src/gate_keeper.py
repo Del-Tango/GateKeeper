@@ -82,8 +82,8 @@ GK_GATE_STATES = {
     1: 'Open',
     'Closed': 0,
     'Open': 1,
-    False: 0,
-    True: 1,
+    False: 1,
+    True: 0,
 }
 GK_GATE_MAP = [GK_GATE_STATES['Closed'] for gate_id in range(GK_GATE_NO)]
 ERROR_CODES = {
@@ -292,7 +292,7 @@ def gate_position_open(gate_ids, state=True, return_values=[]):
     return return_value
 
 #@pysnooper.snoop('log/gate-keeper.log')
-def gate_position_close(gate_ids, state=True, return_values=[]):
+def gate_position_close(gate_ids, state=False, return_values=[]):
     '''
     [ NOTE    ]: Turns on the relay that closes the gate, until the fully-closed
                  button gets pressed which turns it off.
@@ -822,6 +822,35 @@ def parse_command_line_arguments():
 
 # SETUP
 
+#@pysnooper.snoop()
+def setup_gpio():
+    log.debug('')
+    log.info('Setting GPIO warnings to ({})'.format(GK_DEFAULT['pi-warnings']))
+    GPIO.setwarnings(GK_DEFAULT['pi-warnings'])
+    log.info('Setting GPIO mode to ({})'.format(GK_DEFAULT['gpio-mode']))
+    GPIO.setmode(GK_DEFAULT['gpio-mode'])
+    log.info('Setting up GPIO IN pins ({})'.format(list(GK_PINS['in'].values())))
+    GPIO.setup(list(int(item) for item in GK_PINS['in'].values()), GPIO.IN)
+    out_pins = list(GK_PINS['out'].values())
+    log.info('Setting up GPIO OUT pins ({})'.format(out_pins))
+    GPIO.setup(out_pins, GPIO.OUT)
+    log.info('Setting up GPIO IN&OUT pins ({})'.format(
+        list(GK_PINS['both'][data_set_key]['pin'] for data_set_key in GK_PINS['both']))
+    )
+
+    # [ NOTE ]: Ensure relays are in OFF position
+    for data_set_key in GK_PINS['out']:
+        GPIO.output(GK_PINS['out'][data_set_key], GK_GATE_STATES[False])
+
+    for data_set_key in GK_PINS['both']:
+        data_set = GK_PINS['both'][data_set_key]
+        pull_resistor = GPIO.PUD_UP if data_set['pull'] == 'up' else GPIO.PUD_DOWN
+        GPIO.setup(data_set['pin'], GPIO.IN, pull_up_down=pull_resistor)
+        GPIO.add_event_detect(
+            data_set['pin'], GPIO.BOTH, callback=data_set['event-callback']
+        )
+    return True
+
 def setup_machine_id(*args, **kwargs):
     log.debug('')
     stdout_msg('[ INFO ]: Setting machine ID...')
@@ -905,30 +934,6 @@ def setup_system_user_bashrc():
             stdout_msg('[ NOK ]: Could not update file!')
         else:
             stdout_msg('[ OK ]: File updated successfuly!')
-    return True
-
-#@pysnooper.snoop()
-def setup_gpio():
-    log.debug('')
-    log.info('Setting GPIO warnings to ({})'.format(GK_DEFAULT['pi-warnings']))
-    GPIO.setwarnings(GK_DEFAULT['pi-warnings'])
-    log.info('Setting GPIO mode to ({})'.format(GK_DEFAULT['gpio-mode']))
-    GPIO.setmode(GK_DEFAULT['gpio-mode'])
-    log.info('Setting up GPIO IN pins ({})'.format(list(GK_PINS['in'].values())))
-    GPIO.setup(list(int(item) for item in GK_PINS['in'].values()), GPIO.IN)
-    out_pins = list(GK_PINS['out'].values())
-    log.info('Setting up GPIO OUT pins ({})'.format(out_pins))
-    GPIO.setup(out_pins, GPIO.OUT)
-    log.info('Setting up GPIO IN&OUT pins ({})'.format(
-        list(GK_PINS['both'][data_set_key]['pin'] for data_set_key in GK_PINS['both']))
-    )
-    for data_set_key in GK_PINS['both']:
-        data_set = GK_PINS['both'][data_set_key]
-        pull_resistor = GPIO.PUD_UP if data_set['pull'] == 'up' else GPIO.PUD_DOWN
-        GPIO.setup(data_set['pin'], GPIO.IN, pull_up_down=pull_resistor)
-        GPIO.add_event_detect(
-            data_set['pin'], GPIO.BOTH, callback=data_set['event-callback']
-        )
     return True
 
 #@pysnooper.snoop()
