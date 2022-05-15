@@ -221,7 +221,7 @@ function fetch_wireless_interface_from_user () {
 }
 
 function fetch_external_ipv4_address () {
-    check_internet_access
+    check_internet_access "${MD_DEFAULT['check-internet-access']}"
     if [ $? -ne 0 ]; then
         warning_msg "No internet access!"
         return 1

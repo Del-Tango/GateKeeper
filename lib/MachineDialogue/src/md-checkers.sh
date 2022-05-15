@@ -159,8 +159,8 @@ function check_file_has_number_of_lines () {
 }
 
 function check_internet_access () {
-    local ADDRESS="$1"
-    ping -c 1 $ADDRESS 2> /dev/null
+    local ADDRESS="${1:-google.com}"
+    ping -c 1 "$ADDRESS" &> /dev/null
     return $?
 }
 
